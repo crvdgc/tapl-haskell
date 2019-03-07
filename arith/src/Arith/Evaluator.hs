@@ -1,4 +1,4 @@
-module Arith.Evaluator (eval1, eval) where
+module Arith.Evaluator (eval1, eval, eval') where
 
 import Arith.Syntax
 import Control.Monad
@@ -23,3 +23,25 @@ eval t =
   case eval1 t of
     Just t' -> eval t'
     Nothing -> t
+
+{- Types and Programming Languages Exercise 4.2.2
+    Big-step style evaluation; note: without numeric value checking -}
+eval' :: Term -> Term
+eval' t = case t of
+            TermTrue          -> TermTrue
+            TermFalse         -> TermFalse
+            TermZero          -> TermZero
+            (TermIf t1 t2 t3) -> case eval' t1 of
+                                   TermTrue  -> eval' t2
+                                   TermFalse -> eval' t3
+                                   _         -> t
+            (TermSucc t1)     -> TermSucc (eval' t1)
+            (TermPred t1)     -> case eval' t1 of
+                                   TermZero       -> TermZero
+                                   (TermSucc nv1) -> nv1
+                                   _              -> t
+            (TermIsZero t1)   -> case eval' t1 of
+                                   TermZero     -> TermTrue
+                                   (TermSucc _) -> TermFalse
+                                   _            -> t
+

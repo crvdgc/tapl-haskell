@@ -13,6 +13,7 @@ main =
          do parseTree <- fmap (parse parseTerm "arith") $ readFile sourceFile
             putStrLn $ show parseTree
             case parseTree of
-              Right expr -> putStrLn $ "=> " ++ (show . eval) expr
+              -- eval for small-step, eval' for big-step
+              Right expr -> putStrLn $ "=> " ++ (show . eval') expr
               Left err   -> putStrLn $ show err
        _ -> putStrLn "Usage: arith <sourceFile>"
